@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+// use std::collections::HashMap;
 use std::io::{self, prelude::*};
 
 enum MenuOption {
@@ -9,32 +9,60 @@ enum MenuOption {
   Exit,
 }
 
+#[derive(Copy, Clone)]
+struct FloatNum {
+  integral: i32,
+  fractional: i32,
+}
+
+impl FloatNum {
+  fn new(integral: i32, fractional: i32) -> FloatNum {
+    FloatNum {
+      integral,
+      fractional,
+    }
+  }
+
+  fn to_string(self) -> String {
+    format!("{}.{}", self.integral, self.fractional)
+  }
+
+  fn to_float(self) -> f32 {
+    format!("{}.{}", self.integral, self.fractional)
+      .parse()
+      .expect("Error not a number")
+  }
+}
+
 fn main() {
-  let mut number_set: Vec<i32> = vec![];
+  let mut number_set: Vec<FloatNum> = vec![];
   loop {
     display_menu(&number_set);
     let user_input = get_menu_option();
 
     match user_input {
       MenuOption::Enter => number_set = get_number_set(),
+      /*
       MenuOption::Average => get_average(&number_set),
       MenuOption::Median => get_median(&number_set),
       MenuOption::Mode => get_mode(&number_set),
+      */
       MenuOption::Exit => {
         println!("\nExiting...");
         break;
       }
+      _ => continue,
     }
   }
 }
 
-fn display_menu(number_set: &Vec<i32>) {
+fn display_menu(number_set: &Vec<FloatNum>) {
   println!("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
   println!("Welcome To Average Calculator");
   print!("\nCurrent number set [");
 
   for num in number_set.iter() {
-    print!("{}, ", num);
+    print!("{}, ", num.to_string());
   }
 
   println!("]\n");
@@ -83,9 +111,9 @@ fn get_menu_option() -> MenuOption {
   user_input
 }
 
-fn get_number() -> Option<i32> {
+fn get_number() -> Option<FloatNum> {
   println!("\nEnter a number to add to the set or enter \"Done\" to finish");
-  let user_input: Option<i32> = loop {
+  let user_input: Option<FloatNum> = loop {
     let mut user_input = String::new();
 
     io::stdin()
@@ -94,24 +122,52 @@ fn get_number() -> Option<i32> {
     let user_input = user_input.trim();
     if user_input == "Done" {
       break None;
+    } else if user_input == "" {
+      println!("Error invalid input");
+      println!("Input must be a number");
+      continue;
     }
 
-    match user_input.parse() {
-      Ok(num) => break Some(num),
-      Err(_) => {
-        println!("Error: invalid input");
-        println!("Please enter an integer");
+    let mut decimal_index: usize = 0;
 
+    for (index, letter) in user_input.chars().enumerate() {
+      if letter == '.' {
+        decimal_index = index;
+      } else if letter.is_digit(10) == false {
+        println!("Error invalid input");
+        println!("Input must be a number");
         continue;
       }
-    };
+    }
+
+    let integral: String;
+    let fractional: String;
+
+    if decimal_index == 0 {
+      integral = user_input.to_string();
+      fractional = String::from("0");
+    } else {
+      integral = user_input[0..decimal_index].to_string();
+      fractional = user_input[decimal_index + 1..].to_string();
+    }
+
+    if integral.parse::<i32>().is_ok() || fractional.parse::<i32>().is_ok() {
+      break Some(FloatNum::new(
+        integral.parse::<i32>().expect("Not a number"),
+        fractional.parse::<i32>().expect("Not a number"),
+      ));
+    } else {
+      println!("Error invalid input");
+      println!("Input must be a number");
+      continue;
+    }
   };
 
   user_input
 }
 
-fn get_number_set() -> Vec<i32> {
-  let mut number_set: Vec<i32> = Vec::new();
+fn get_number_set() -> Vec<FloatNum> {
+  let mut number_set: Vec<FloatNum> = Vec::new();
 
   loop {
     let number = get_number();
@@ -127,13 +183,13 @@ fn get_number_set() -> Vec<i32> {
   println!("The number set contains: ");
 
   for num in number_set.iter() {
-    print!("{} ", num);
+    print!("{} ", num.to_string());
   }
 
   number_set
 }
-
-fn get_average(number_set: &Vec<i32>) {
+/*
+fn get_average(number_set: &Vec<f32>) {
   if number_set.len() as i32 == 0 {
     println!("\nNumber set is empty");
     return;
@@ -150,7 +206,7 @@ fn get_average(number_set: &Vec<i32>) {
   println!("\nThe average of your number set is {}", average);
 }
 
-fn get_median(number_set: &Vec<i32>) {
+fn get_median(number_set: &Vec<f32>) {
   if number_set.len() as i32 == 0 {
     println!("\nNumber set is empty");
     return;
@@ -163,7 +219,7 @@ fn get_median(number_set: &Vec<i32>) {
     return;
   }
   let mut number_set_copy = number_set.clone();
-  number_set_copy.sort();
+  number_set_copy.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
   let median: f32;
   if number_set_copy.len() as i32 % 2 == 0 {
@@ -181,7 +237,7 @@ fn get_median(number_set: &Vec<i32>) {
   println!("\nThe median of the number set is {}", median);
 }
 
-fn get_mode(number_set: &Vec<i32>) {
+fn get_mode(number_set: &Vec<f32>) {
   if number_set.len() as i32 == 0 {
     println!("\nNumber set is empty");
     return;
@@ -208,3 +264,4 @@ fn get_mode(number_set: &Vec<i32>) {
     mode, highest_value
   );
 }
+*/
