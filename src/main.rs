@@ -42,8 +42,8 @@ fn main() {
 
     match user_input {
       MenuOption::Enter => number_set = get_number_set(),
-      /*
       MenuOption::Average => get_average(&number_set),
+      /*
       MenuOption::Median => get_median(&number_set),
       MenuOption::Mode => get_mode(&number_set),
       */
@@ -188,8 +188,8 @@ fn get_number_set() -> Vec<FloatNum> {
 
   number_set
 }
-/*
-fn get_average(number_set: &Vec<f32>) {
+
+fn get_average(number_set: &Vec<FloatNum>) {
   if number_set.len() as i32 == 0 {
     println!("\nNumber set is empty");
     return;
@@ -198,14 +198,14 @@ fn get_average(number_set: &Vec<f32>) {
   let mut total: f32 = 0.0;
 
   for num in number_set.iter() {
-    total += *num as f32;
+    total += num.to_float();
   }
 
   let average: f32 = total / number_set.len() as f32;
 
   println!("\nThe average of your number set is {}", average);
 }
-
+/*
 fn get_median(number_set: &Vec<f32>) {
   if number_set.len() as i32 == 0 {
     println!("\nNumber set is empty");
