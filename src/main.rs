@@ -1,4 +1,4 @@
-// use std::collections::HashMap;
+use std::collections::HashMap;
 use std::io::{self, prelude::*};
 
 enum MenuOption {
@@ -44,14 +44,11 @@ fn main() {
       MenuOption::Enter => number_set = get_number_set(),
       MenuOption::Average => get_average(&number_set),
       MenuOption::Median => get_median(&number_set),
-      /*
       MenuOption::Mode => get_mode(&number_set),
-      */
       MenuOption::Exit => {
         println!("\nExiting...");
         break;
       }
-      _ => continue,
     }
   }
 }
@@ -246,9 +243,8 @@ fn get_median(number_set: &Vec<FloatNum>) {
 
   println!("\nThe median of the number set is {}", median);
 }
-/*
 
-fn get_mode(number_set: &Vec<f32>) {
+fn get_mode(number_set: &Vec<FloatNum>) {
   if number_set.len() as i32 == 0 {
     println!("\nNumber set is empty");
     return;
@@ -257,16 +253,16 @@ fn get_mode(number_set: &Vec<f32>) {
   let mut curr_numbers = HashMap::new();
 
   for num in number_set.iter() {
-    let count = curr_numbers.entry(num).or_insert(0);
+    let count = curr_numbers.entry(num.to_string()).or_insert(0);
     *count += 1;
   }
 
-  let mut mode: i32 = 0;
+  let mut mode: f32 = 0.0;
   let mut highest_value = 0;
   for (key, value) in curr_numbers {
     if highest_value < value {
       highest_value = value;
-      mode = *key;
+      mode = key.parse().expect("Failed to parse number");
     }
   }
 
@@ -275,4 +271,3 @@ fn get_mode(number_set: &Vec<f32>) {
     mode, highest_value
   );
 }
-*/
