@@ -43,8 +43,8 @@ fn main() {
     match user_input {
       MenuOption::Enter => number_set = get_number_set(),
       MenuOption::Average => get_average(&number_set),
-      /*
       MenuOption::Median => get_median(&number_set),
+      /*
       MenuOption::Mode => get_mode(&number_set),
       */
       MenuOption::Exit => {
@@ -205,20 +205,29 @@ fn get_average(number_set: &Vec<FloatNum>) {
 
   println!("\nThe average of your number set is {}", average);
 }
-/*
-fn get_median(number_set: &Vec<f32>) {
+
+fn get_median(number_set: &Vec<FloatNum>) {
   if number_set.len() as i32 == 0 {
     println!("\nNumber set is empty");
     return;
   } else if number_set.len() as i32 == 1 {
     println!(
       "\nThe median of the number set is {}",
-      number_set.get(0).unwrap()
+      number_set.get(0).unwrap().to_string()
     );
 
     return;
   }
-  let mut number_set_copy = number_set.clone();
+  let mut number_set_copy = Vec::new();
+
+  for nums in number_set.iter() {
+    number_set_copy.push(nums.to_float());
+  }
+
+  for nums in number_set_copy.iter() {
+    println!("{}", nums);
+  }
+
   number_set_copy.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
   let median: f32;
@@ -231,11 +240,13 @@ fn get_median(number_set: &Vec<f32>) {
 
     median = (lower_half.unwrap() + upper_half.unwrap()) as f32 / 2.0;
   } else {
-    median = (number_set_copy.len() as f32) / 2.0;
+    let median_index = (number_set_copy.len()) / 2;
+    median = *number_set_copy.get(median_index).unwrap();
   }
 
   println!("\nThe median of the number set is {}", median);
 }
+/*
 
 fn get_mode(number_set: &Vec<f32>) {
   if number_set.len() as i32 == 0 {
