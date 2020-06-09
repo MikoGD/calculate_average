@@ -116,12 +116,16 @@ fn get_number() -> Option<FloatNum> {
     io::stdin()
       .read_line(&mut user_input)
       .expect("Failed to read input");
-    let user_input = user_input.trim();
-    if user_input == "Done" {
+    let user_input = user_input.trim().to_lowercase();
+    if user_input == "done" {
       break None;
     } else if user_input == "" {
       println!("Error invalid input");
-      println!("Input must be a number");
+      println!("Input must be a number\n");
+      continue;
+    } else if is_any_number(&user_input) == false {
+      println!("Error invalid input");
+      println!("Input must be a number\n");
       continue;
     }
 
@@ -132,7 +136,7 @@ fn get_number() -> Option<FloatNum> {
         decimal_index = index;
       } else if letter.is_digit(10) == false {
         println!("Error invalid input");
-        println!("Input must be a number");
+        println!("Input must be a number\n");
         continue;
       }
     }
@@ -155,12 +159,24 @@ fn get_number() -> Option<FloatNum> {
       ));
     } else {
       println!("Error invalid input");
-      println!("Input must be a number");
+      println!("Input must be a number\n");
       continue;
     }
   };
 
   user_input
+}
+
+fn is_any_number(user_input: &String) -> bool {
+  for character in user_input.chars() {
+    if character.is_digit(10) || character == '.' {
+      continue;
+    } else {
+      return false;
+    }
+  }
+
+  true
 }
 
 fn get_number_set() -> Vec<FloatNum> {
